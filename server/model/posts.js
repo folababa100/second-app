@@ -1,27 +1,20 @@
-var mongoose = require('mongoose')
-var Schema = mongoose.Schema;
+var mongoose = require('mongoose');
 
-var Posts = new Schema({
-  name: {
-    type: String,
-    minlength: 1,
-    required: true,
-    trim: true
-  },
-  body: {
-    minlength: 1,
+var Todo = mongoose.model('Todo', {
+  text: {
     type: String,
     required: true,
+    minlength: 1,
     trim: true
   },
-  author: {
-    minlength: 1,
-    type: String,
+  completed: {
+    type: Boolean,
+    default: false
   },
-  createdAt: {
+  completedAt: {
     type: Number,
     default: null
   }
-})
+});
 
-module.exports = {Posts};
+module.exports = {Todo};
