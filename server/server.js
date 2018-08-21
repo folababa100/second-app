@@ -17,13 +17,13 @@ app.use(bodyParser.json());
 const port = process.env.PORT;
 
 app.post('/users', (req, res) => {
-  var body = _.pick(req.body, ['email', 'password']);
+  var body = _.pick(req.body, ['email', 'password', 'username']);
   var user = new User(body);
 
   user.save().then(() => {
     return user.generateAuthToken()
   }).then((token) => {
-    res.header('x-auth', token).send(user)
+    res.header('x-auth', token).send(user);
   }).catch((e) => {
     res.status(400).send(e)
   });
@@ -33,10 +33,31 @@ app.get('/users/me', authenticate, (req, res) => {
   res.send(req.user);
 });
 
-app.post('/products', (req, res) => {
+app.post('/users/login', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+
+  User.findByCredentials(body.email, body.password).then((user) => {
+    return user.generateAuthToken().then((token) => {
+      res.header('x-auth', token).send(user);
+    });
+  }).catch((e) => {
+    res.status(400).send(e)
+  });
+});
+
+app.delete('/users/me/token', authenticate, (req, res) => {
+  req.user.removeToken(req.token).then(() => {
+    res.status(200).send();
+  }, () => {
+    res.status(400).send();
+  });
+});
+
+app.post('/products', authenticate, (req, res) => {
   var product = new Product({
     name: req.body.name,
-    body: req.body.body
+    body: req.body.body,
+    _creator: req.user._id
   });
 
   product.save().then((doc) => {
@@ -46,22 +67,27 @@ app.post('/products', (req, res) => {
   });
 });
 
-app.get('/products', (req, res) => {
-  Product.find().then((products) => {
+app.get('/products', authenticate, (req, res) => {
+  Product.find({
+    _creator: req.user._id
+  }).then((products) => {
     res.send({products})
   }, (e) => {
     res.status(400).send(e);
   });
 });
 
-app.get('/products/:id', (req, res) => {
+app.get('/products/:id', authenticate, (req, res) => {
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send()
   }
 
-  Product.findById(id).then((product) => {
+  Product.findById({
+    _id: id,
+    _creator: req.user._id
+  }).then((product) => {
     if (!product) {
       return res.status(404).send()
 
@@ -73,14 +99,17 @@ app.get('/products/:id', (req, res) => {
 });
 
 
-app.delete('/products/:id', (req, res) => {
+app.delete('/products/:id', authenticate, (req, res) => {
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send()
   }
 
-  Product.findByIdAndRemove(id).then((product) => {
+  Product.findOneAndRemove({
+    _id: id,
+    _creator: req.user._id
+  }).then((product) => {
     if (!product) {
       return res.status(404).send()
     }
@@ -91,7 +120,7 @@ app.delete('/products/:id', (req, res) => {
   })
 });
 
-app.patch('/products/:id', (req, res) => {
+app.patch('/products/:id', authenticate, (req, res) => {
   var id = req.params.id;
 
   var body = _.pick(req.body, ['name', 'body', 'completed']);
@@ -106,7 +135,10 @@ app.patch('/products/:id', (req, res) => {
     body.completed = false;
   }
 
-  Product.findByIdAndUpdate(id, {$set: body}, {$set: true}).then((product) => {
+  Product.findOneAndUpdate({
+    _id: id,
+    _creator: req.user._id
+  }, {$set: body}, {$set: true}).then((product) => {
     if (!product) {
       return res.status(404).send()
     }
