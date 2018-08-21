@@ -7,6 +7,6 @@
   "development": {
     "PORT": 3001,
     "MONGODB_URI": "mongodb://localhost:27017/PostApp",
-    "JWT_SECRET":"ojfssojr0jDCDrf0k0ovj004fkD0v"
+    "JWT_SECRET": "ojfssojr0jDCDrf0k0ovj004fkD0v"
   }
 }
