@@ -1,18 +1,20 @@
 import React from 'react';
-import { hydrate } from 'react-dom';
+import ReactDOM from 'react-dom';
 import { Provider } from "react-redux";
 import configureStore from './store/configureStore';
 // import App from './components/App';
 import './styles/index.css';
 import AppRouter from './router/routes'
 import registerServiceWorker from './registerServiceWorker';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const store = configureStore();
 
-hydrate(
+const jsx = (
   <Provider store={store}>
-    <AppRouter/>
-  </Provider>,
-  document.getElementById('root')
-)
+    <AppRouter />
+  </Provider>
+);
+
+ReactDOM.render(jsx, document.getElementById('root'));
 registerServiceWorker();

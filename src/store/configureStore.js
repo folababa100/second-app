@@ -6,7 +6,7 @@ import thunk from 'redux-thunk';
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default () => {
-  const store = (
+  const store = createStore(
     combineReducers({
       filter: filterReducer,
       lists: listsReducer
