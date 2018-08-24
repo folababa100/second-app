@@ -43,7 +43,7 @@
     "build-js": "react-scripts build",
     "build": "npm-run-all build-css build-js",
     "test-client": "react-scripts test --env=jsdom",
-    "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha server/**/*.test.js",
+    "test": "export NODE_ENV=test || SET \"NODE_ENV=test\" && mocha server/**/*.test.js --timeout 10000",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
@@ -52,8 +52,11 @@
     "babel-preset-react-app": "^3.1.2",
     "babel-preset-stage-2": "^6.24.1",
     "concurrently": "^3.6.1",
+    "dotenv": "^6.0.0",
     "enzyme": "^3.4.4",
-    "expect": "1.20.2",
+    "enzyme-adapter-react-16": "^1.2.0",
+    "enzyme-to-json": "^3.3.4",
+    "expect": "^23.5.0",
     "ignore-styles": "^5.0.1",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.3",

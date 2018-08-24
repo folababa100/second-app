@@ -4,42 +4,42 @@ const jwt = require('jsonwebtoken');
 const {Product} = require('./../../models/product');
 const {User} = require('./../../models/user');
 
-const userOneId = ObjectID(); 
-const userTwoId = ObjectID();
+const userOneId = new ObjectID(); 
+const userTwoId = new ObjectID();
 
 const users = [{
   _id: userOneId,
-  email: "dekunbifola1@gmail.com",
-  username: "folababa1",
-  password: "UserOnePass",
+  email: 'andrew@example.com',
+  username: 'folababa0',
+  password: 'userOnePass',
   tokens: [{
-    access: "auth",
-    token: jwt.sign({id: userOneId, access: 'auth'}, process.env.JWT_SECRET).toString()
+    access: 'auth',
+    token: jwt.sign({_id: userOneId, access: 'auth'}, process.env.JWT_SECRET).toString()
   }]
 }, {
   _id: userTwoId,
-  email: "dekunbifola2@gmail.com",
-  username: "folababa2",
-  password: "UserTwoPass",
+  username: 'Folababa1',
+  email: 'jen@example.com',
+  password: 'userTwoPass',
   tokens: [{
-    access: "auth",
-    token: jwt.sign({id: userTwoId, access: 'auth'}, process.env.JWT_SECRET).toString()
+    access: 'auth',
+    token: jwt.sign({_id: userTwoId, access: 'auth'}, process.env.JWT_SECRET).toString()
   }]
-}]
+}];
 
 const products = [{
   _id: new ObjectID(),
-  name: 'First user',
-  body: 'First user body',
+  name: 'First test todo',
+  body: 'First test todo',
   _creator: userOneId
 }, {
   _id: new ObjectID(),
-  name: 'Second user',
-  body: 'Second user body',
+  name: 'Second test todo',
+  body: 'Second test todo',
   completed: true,
   completedAt: 333,
   _creator: userTwoId
-}]
+}];
 
 const populateProducts = (done) => {
   Product.remove({}).then(() => {
