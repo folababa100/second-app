@@ -16,7 +16,11 @@ app.use(bodyParser.json());
 
 const port = process.env.PORT;
 
-app.use(function(req, res, next) {
+// app.use(function(req, res, next) {
+
+// });
+
+app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
@@ -24,7 +28,7 @@ app.use(function(req, res, next) {
  //and remove cacheing so we get the most recent comments
   res.setHeader('Cache-Control', 'no-cache');
   next();
- });
+})
 
 app.post('/users', (req, res) => {
   var body = _.pick(req.body, ['email', 'password', 'username']);
@@ -76,6 +80,14 @@ app.post('/products', authenticate, (req, res) => {
     res.status(400).send(e);
   });
 });
+
+// app.get('/products', (req, res) => {
+//   Product.find().then((products) => {
+//     res.send({products})
+//   }, (e) => {
+//     res.status(400).send(e);
+//   });
+// });
 
 app.get('/products', authenticate, (req, res) => {
   Product.find({
