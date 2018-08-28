@@ -12,9 +12,13 @@ export default class PostsBox extends React.Component {
     this.loadProductsFromServer = this.loadProductsFromServer.bind(this);
   }
   loadProductsFromServer() {
-    axios.get('http://localhost:3001/products')
+    axios.get('http://localhost:3002/products', {
+      headers: {
+        "x-auth": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Yjg1NjZjOTA1MmI0MDJjODBmZjJjYWYiLCJhY2Nlc3MiOiJhdXRoIiwiaWF0IjoxNTM1NDY5MjU4fQ.9qEVqieslHkc-ZeLGW5Nv-Q3pSsat7NobFJAvW-T23g"
+      }
+    })
       .then(res => {
-        this.setState({data: res.data.products})
+        this.setState({ data: res.data.products })
       })
   }
   componentDidMount() {

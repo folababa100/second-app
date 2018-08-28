@@ -16,16 +16,11 @@ app.use(bodyParser.json());
 
 const port = process.env.PORT;
 
-// app.use(function(req, res, next) {
-
-// });
-
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
- //and remove cacheing so we get the most recent comments
+  res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, x-auth',);
   res.setHeader('Cache-Control', 'no-cache');
   next();
 })
@@ -136,7 +131,7 @@ app.delete('/products/:id', authenticate, (req, res) => {
       return res.status(404).send()
     }
 
-    res.send(product)
+    res.send({product})
   }).catch((e) => {
     res.status(400).send(e)
   })
@@ -155,19 +150,20 @@ app.patch('/products/:id', authenticate, (req, res) => {
     body.completedAt = moment().valueOf();
   } else {
     body.completed = false;
+    body.completedAt = null;
   }
 
   Product.findOneAndUpdate({
     _id: id,
     _creator: req.user._id
-  }, {$set: body}, {$set: true}).then((product) => {
+  }, {$set: body}, {new: true}).then((product) => {
     if (!product) {
       return res.status(404).send()
     }
 
     res.send({product})
   }).catch((e) => {
-    res.status(400).send(e)
+    res.status(400).send()
   })
 
 })

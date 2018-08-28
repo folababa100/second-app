@@ -1,9 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { shallow } from "enzyme";
 import Header from '../../components/Header';
 
 test('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<Header />, div);
-  ReactDOM.unmountComponentAtNode(div);
+
+  const wrapper = shallow(<Header/>);
+  expect(wrapper).toMatchSnapshot();
 });
